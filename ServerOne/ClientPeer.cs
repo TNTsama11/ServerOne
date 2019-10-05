@@ -31,7 +31,8 @@ namespace ServerOne
         private List<byte> dataCache = new List<byte>(); 
 
 
-        //解决粘包和拆包
+        //解决粘包和拆包采用数据包头+数据包尾的方式
+        //包头是数据的长度，包尾是数据内容
 
         #endregion
 
