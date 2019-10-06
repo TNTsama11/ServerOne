@@ -33,35 +33,34 @@ public class ServerPeer
         /// <param name="maxCount">最大链接数</param>
         public void Start(int port,int maxCount)
         {
-            PrintMessage("执行Start():开始尝试启动服务器");
+           Tool.PrintMessage("执行Start():开始尝试启动服务器");
             try
             {
-                PrintMessage("开始启动服务器");
-                PrintMessage("初始化服务器对象");
+                Tool.PrintMessage("开始启动服务器");
+                Tool.PrintMessage("初始化服务器对象");
                 serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                PrintMessage("初始化最大请求数为"+ maxCount);
+                Tool.PrintMessage("初始化最大请求数为"+ maxCount);
                 acceptSemaphore = new Semaphore(maxCount, maxCount);
-                PrintMessage("初始化客户端连接池，大小为" + maxCount);
+                Tool.PrintMessage("初始化客户端连接池，大小为" + maxCount);
                 clientPeerPool = new ClientPeerPool(maxCount);
                 ClientPeer tempClientPeer = null;
                 for(int i = 0; i < maxCount; i++)  //在开启服务器时new出客户端对象保存在内存中，运行时可取出，减轻服务器运行时的性能开销
                 {
-                    tempClientPeer = new ClientPeer();
-                    tempClientPeer.receiveArgs = new SocketAsyncEventArgs();
+                    tempClientPeer = new ClientPeer();                    
                     tempClientPeer.receiveArgs.Completed += Receive_Completed; //结束时回调方法
-                    tempClientPeer.receiveArgs.UserToken = tempClientPeer;
-                    PrintMessage("初始化客户端对象"+i+"，存入连接池");
+                    tempClientPeer.receiveCompleted = receiveCompleted;
+                    Tool.PrintMessage("初始化客户端对象"+i+"，存入连接池");
                     clientPeerPool.Enqueue(tempClientPeer);//入队
                 }
-                PrintMessage(" serverSocket.Bind尝试绑定本地终结点");
+                Tool.PrintMessage(" serverSocket.Bind尝试绑定本地终结点");
                 serverSocket.Bind(new IPEndPoint(IPAddress.Any, port));
-                PrintMessage(" serverSocket.Listen开始监听等待队列最大为10");
+                Tool.PrintMessage(" serverSocket.Listen开始监听等待队列最大为10");
                 serverSocket.Listen(10);
                 StartAccept(null);
             }
             catch (Exception e) //输出异常信息
             {
-                PrintMessage(e.Message);
+                Tool.PrintMessage(e.Message);
                 
             }
         }
@@ -69,14 +68,7 @@ public class ServerPeer
 
 
 
-        /// <summary>
-        /// 控制台输出带时间戳的信息
-        /// </summary>
-        /// <param name="message">信息</param>
-        private void PrintMessage(string message)
-        {
-            Console.WriteLine(DateTime.Now.ToLongTimeString().ToString()+"-"+message);
-        }
+
 
 
         #region 接受连接
@@ -86,7 +78,7 @@ public class ServerPeer
         /// <param name="e"></param>
         private void StartAccept(SocketAsyncEventArgs e)
         {
-            PrintMessage("执行StartAccept():开始等待客户端连接");
+            Tool.PrintMessage("执行StartAccept():开始等待客户端连接");
             if (e == null)
             {
                 e = new SocketAsyncEventArgs();
@@ -94,7 +86,7 @@ public class ServerPeer
             }
             acceptSemaphore.WaitOne(); //限制线程访问
 
-            PrintMessage("serverSocket.AcceptAsync():开始异步接受客户端连接");
+            Tool.PrintMessage("serverSocket.AcceptAsync():开始异步接受客户端连接");
             bool result= serverSocket.AcceptAsync(e); //返回true表示还在执行，返回false表示执行完成
             if (result==false)
             {
@@ -108,7 +100,7 @@ public class ServerPeer
         /// <param name="e"></param>
         private void ProcessAccpet(SocketAsyncEventArgs e)
         {
-            PrintMessage("执行ProcessAccpet():开始处理客户端的连接请求");
+            Tool.PrintMessage("执行ProcessAccpet():开始处理客户端的连接请求");
             ClientPeer client = clientPeerPool.Dequeue(); //从队列中取出一个
             client.clientSocket=e.AcceptSocket;
             StartReceive(client); //开始接收数据
@@ -122,7 +114,7 @@ public class ServerPeer
         /// <param name="e"></param>
         private void Accept_Completed(object sender,SocketAsyncEventArgs e)
         {
-            PrintMessage("执行Accept_Completed():接受连接请求异步事件完成，开始处理客户端的连接请求");
+            Tool.PrintMessage("执行Accept_Completed():接受连接请求异步事件完成，开始处理客户端的连接请求");
             ProcessAccpet(e);
         }
         #endregion
@@ -143,7 +135,7 @@ public class ServerPeer
         /// <param name="client"></param>
         private void StartReceive(ClientPeer client)
         {
-            PrintMessage("执行StartRecive()方法:开始尝试接收数据");
+            Tool.PrintMessage("执行StartRecive()方法:开始尝试接收数据");
             try
             {
                 bool result= client.clientSocket.ReceiveAsync(client.receiveArgs); //所有client层有关的东西都在client层自身处理，上层server层只负责调用
@@ -154,7 +146,7 @@ public class ServerPeer
             }
             catch (Exception e)
             {
-                PrintMessage(e.Message);
+                Tool.PrintMessage(e.Message);
             }
         }
 
@@ -164,11 +156,11 @@ public class ServerPeer
         /// <param name="e"></param>
         private void ProcessReceive(SocketAsyncEventArgs e)
         {
-            PrintMessage("执行ProcessReceive()方法:开始处理接收到的数据");
+            Tool.PrintMessage("执行ProcessReceive()方法:开始处理接收到的数据");
             ClientPeer client = e.UserToken as ClientPeer;
             if (client.receiveArgs.SocketError==SocketError.Success&&client.receiveArgs.BytesTransferred>0) //如果socket操作成功并且传过来的数据字节数不为0
             {
-                PrintMessage("成功接收有效数据");
+                Tool.PrintMessage("成功接收有效数据");
                 byte[] package = new byte[client.receiveArgs.BytesTransferred];
                 Buffer.BlockCopy(client.receiveArgs.Buffer, 0, package, 0, client.receiveArgs.BytesTransferred); //将传来的数据拷贝进数组
                 client.StartReceive(package);
@@ -196,7 +188,15 @@ public class ServerPeer
         {
             ProcessReceive(e);
         }
-
+        /// <summary>
+        /// 一个数据包解析完成后调用
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="value"></param>
+        private void receiveCompleted(ClientPeer client,SocketMessage msg)
+        {
+            //给应用层使用
+        }
         #endregion
     }
 }

@@ -15,7 +15,21 @@ namespace ServerOne
     {
         public Socket clientSocket { get; set; }
 
+        public ClientPeer()
+        {
+            receiveArgs = new SocketAsyncEventArgs();
+            receiveArgs.UserToken = this;
+        }
+
         #region 接收数据
+        /// <summary>
+        /// 数据包解析完成后的回调委托
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="value"></param>
+        public delegate void ReceiveCompleted(ClientPeer client, SocketMessage msg);
+        public ReceiveCompleted receiveCompleted;
+
         /// <summary>
         /// 存储接收到数据的缓存区
         /// </summary>
@@ -35,7 +49,7 @@ namespace ServerOne
         /// <param name="package"></param>
         public void StartReceive(byte[] package)
         {
-            PrintMessage("执行StartReceive()方法:在client层处理数据包");
+            Tool.PrintMessage("执行StartReceive()方法:在client层处理数据包");
             dataCache.AddRange(package);
             if (!isProcess)
             {
@@ -47,20 +61,26 @@ namespace ServerOne
         /// </summary>
         private void ProccessReveive()
         {
+            isProcess = true;
+            byte[] data= EncodeTool.DecodePackage(ref dataCache);
+            if (data == null) //数据包解析失败
+            {
+                isProcess = false;
+                return;
+            }
+            SocketMessage msg = EncodeTool.DecodeMessage(data);
 
+            if (receiveCompleted != null)
+            {
+                receiveCompleted(this, msg);
+            }
+
+            ProccessReveive(); //递归调用持续处理
         }
 
         #endregion
 
 
 
-        /// <summary>
-        /// 控制台输出带时间戳的信息
-        /// </summary>
-        /// <param name="message">信息</param>
-        private void PrintMessage(string message)
-        {
-            Console.WriteLine(DateTime.Now.ToLongTimeString().ToString() + "-" + message);
-        }
     }
 }
