@@ -13,26 +13,42 @@ namespace ServerOne
     /// </summary>
     class ClientPeer
     {
-        private Socket clientSocket;
+        public Socket clientSocket { get; set; }
 
-        /// <summary>
-        /// 设置连接对象
-        /// </summary>
-        /// <param name="socket"></param>
-        public void SetSocket(Socket socket)
-        {
-            PrintMessage("执行SetSocket():设置客户端连接对象");
-            clientSocket = socket;
-        }
         #region 接收数据
         /// <summary>
         /// 存储接收到数据的缓存区
         /// </summary>
-        private List<byte> dataCache = new List<byte>(); 
+        private List<byte> dataCache = new List<byte>();
+        /// <summary>
+        /// 接收的异步套接字操作请求
+        /// </summary>
+        public SocketAsyncEventArgs receiveArgs { get; set; }
+        /// <summary>
+        /// 是否正在处理数据
+        /// </summary>
+        private bool isProcess = false;
 
+        /// <summary>
+        /// client层处理数据包
+        /// </summary>
+        /// <param name="package"></param>
+        public void StartReceive(byte[] package)
+        {
+            PrintMessage("执行StartReceive()方法:在client层处理数据包");
+            dataCache.AddRange(package);
+            if (!isProcess)
+            {
+                ProccessReveive();
+            }
+        }
+        /// <summary>
+        /// 处理数据
+        /// </summary>
+        private void ProccessReveive()
+        {
 
-        //解决粘包和拆包采用数据包头+数据包尾的方式
-        //包头是数据的长度，包尾是数据内容
+        }
 
         #endregion
 

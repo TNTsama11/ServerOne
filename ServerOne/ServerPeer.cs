@@ -47,6 +47,9 @@ public class ServerPeer
                 for(int i = 0; i < maxCount; i++)  //在开启服务器时new出客户端对象保存在内存中，运行时可取出，减轻服务器运行时的性能开销
                 {
                     tempClientPeer = new ClientPeer();
+                    tempClientPeer.receiveArgs = new SocketAsyncEventArgs();
+                    tempClientPeer.receiveArgs.Completed += Receive_Completed; //结束时回调方法
+                    tempClientPeer.receiveArgs.UserToken = tempClientPeer;
                     PrintMessage("初始化客户端对象"+i+"，存入连接池");
                     clientPeerPool.Enqueue(tempClientPeer);//入队
                 }
@@ -87,7 +90,7 @@ public class ServerPeer
             if (e == null)
             {
                 e = new SocketAsyncEventArgs();
-                e.Completed += Accept_Completed;
+                e.Completed += Accept_Completed; //结束时回调方法
             }
             acceptSemaphore.WaitOne(); //限制线程访问
 
@@ -107,7 +110,8 @@ public class ServerPeer
         {
             PrintMessage("执行ProcessAccpet():开始处理客户端的连接请求");
             ClientPeer client = clientPeerPool.Dequeue(); //从队列中取出一个
-            client.SetSocket(e.AcceptSocket);
+            client.clientSocket=e.AcceptSocket;
+            StartReceive(client); //开始接收数据
             e.AcceptSocket = null; //重置e.AcceptSocket
             StartAccept(e);        //递归调用 参数可以传null，但是每次会new耗费性能所以复用e
         }
@@ -132,6 +136,66 @@ public class ServerPeer
         #endregion
 
         #region 接收数据
+        
+        /// <summary>
+        /// 开始接收数据
+        /// </summary>
+        /// <param name="client"></param>
+        private void StartReceive(ClientPeer client)
+        {
+            PrintMessage("执行StartRecive()方法:开始尝试接收数据");
+            try
+            {
+                bool result= client.clientSocket.ReceiveAsync(client.receiveArgs); //所有client层有关的东西都在client层自身处理，上层server层只负责调用
+                if (result == false)
+                {
+                    ProcessReceive(client.receiveArgs);
+                }
+            }
+            catch (Exception e)
+            {
+                PrintMessage(e.Message);
+            }
+        }
+
+        /// <summary>
+        /// 处理接收到的数据
+        /// </summary>
+        /// <param name="e"></param>
+        private void ProcessReceive(SocketAsyncEventArgs e)
+        {
+            PrintMessage("执行ProcessReceive()方法:开始处理接收到的数据");
+            ClientPeer client = e.UserToken as ClientPeer;
+            if (client.receiveArgs.SocketError==SocketError.Success&&client.receiveArgs.BytesTransferred>0) //如果socket操作成功并且传过来的数据字节数不为0
+            {
+                PrintMessage("成功接收有效数据");
+                byte[] package = new byte[client.receiveArgs.BytesTransferred];
+                Buffer.BlockCopy(client.receiveArgs.Buffer, 0, package, 0, client.receiveArgs.BytesTransferred); //将传来的数据拷贝进数组
+                client.StartReceive(package);
+
+                StartReceive(client); //递归调用一直接收
+            }
+            else if(client.receiveArgs.BytesTransferred==0) //传输过来的数据字节数为0客户端连接断开
+            {
+                if (client.receiveArgs.SocketError==SocketError.Success) //socket操作正常但是数据为0客户端主动断开连接
+                {
+
+                }
+                else //网络异常被动断开
+                {
+
+                }
+            }
+        }
+
+        /// <summary>
+        /// 接收完成时触发
+        /// </summary>
+        /// <param name="e"></param>
+        private void Receive_Completed(object sender, SocketAsyncEventArgs e)
+        {
+            ProcessReceive(e);
+        }
 
         #endregion
     }
