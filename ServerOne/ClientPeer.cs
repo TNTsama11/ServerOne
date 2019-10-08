@@ -11,7 +11,7 @@ namespace ServerOne
     /// <summary>
     /// 客户端类
     /// </summary>
-    class ClientPeer
+     public  class ClientPeer
     {
         public Socket clientSocket { get; set; }
 
@@ -19,6 +19,8 @@ namespace ServerOne
         {
             receiveArgs = new SocketAsyncEventArgs();
             receiveArgs.UserToken = this;
+            SendArgs = new SocketAsyncEventArgs();
+            SendArgs.Completed += SendArgs_Completed;
         }
 
         #region 接收数据
@@ -41,7 +43,7 @@ namespace ServerOne
         /// <summary>
         /// 是否正在处理数据
         /// </summary>
-        private bool isProcess = false;
+        private bool isReceiveProcess = false;
 
         /// <summary>
         /// client层处理数据包
@@ -51,7 +53,7 @@ namespace ServerOne
         {
             Tool.PrintMessage("执行StartReceive()方法:在client层处理数据包");
             dataCache.AddRange(package);
-            if (!isProcess)
+            if (!isReceiveProcess)
             {
                 ProccessReveive();
             }
@@ -61,11 +63,11 @@ namespace ServerOne
         /// </summary>
         private void ProccessReveive()
         {
-            isProcess = true;
+            isReceiveProcess = true;
             byte[] data= EncodeTool.DecodePackage(ref dataCache);
             if (data == null) //数据包解析失败
             {
-                isProcess = false;
+                isReceiveProcess = false;
                 return;
             }
             SocketMessage msg = EncodeTool.DecodeMessage(data);
@@ -80,7 +82,106 @@ namespace ServerOne
 
         #endregion
 
+        #region 断开连接
 
+        /// <summary>
+        /// 断开连接
+        /// </summary>
+        public void Disconnect()  //断开连接并且可以重用
+        {
+            dataCache.Clear(); //清空数据缓存区
+            isReceiveProcess = false;
 
+            clientSocket.Shutdown(SocketShutdown.Both);
+            clientSocket.Close();
+            clientSocket = null;
+        }
+
+        #endregion
+
+        #region 发送数据
+
+        /// <summary>
+        /// 发送消息的队列
+        /// </summary>
+        private Queue<byte[]> sendQueue = new Queue<byte[]>();
+        /// <summary>
+        /// 是否正在发送
+        /// </summary>
+        private bool isSendProcess = false;
+        /// <summary>
+        /// 发送的异步socket操作
+        /// </summary>
+        private SocketAsyncEventArgs SendArgs;
+        /// <summary>
+        /// 发送时断开连接的委托
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="reason"></param>
+        public delegate void SendDisconnect(ClientPeer client, string reason);
+        public SendDisconnect sendDiconnect;
+        /// <summary>
+        /// 服务器向客户端发送数据
+        /// </summary>
+        /// <param name="opCode">操作码</param>
+        /// <param name="subCode">子操作</param>
+        /// <param name="value">参数</param>
+        public void SendMessage(int opCode,int subCode,object value)
+        {
+            SocketMessage smg = new SocketMessage(opCode,subCode,value);
+            byte[] data = EncodeTool.EncodeMessage(smg); //构建SocketMessage
+            byte[] package = EncodeTool.EncodePackage(data); //构建数据包
+            sendQueue.Enqueue(package); //将要发送的消息存入消息队列
+            if (!isSendProcess)
+            {
+                ProcessSend();
+            }
+        }
+
+        /// <summary>
+        /// 处理发送
+        /// </summary>
+        private void Send()
+        {
+            isSendProcess = true;
+            if (sendQueue.Count == 0) //如果消息队列中没有消息就停止
+            {
+                isSendProcess = false;
+                return;
+            }
+            byte[] package = sendQueue.Dequeue(); //从消息队列里取出一个消息
+            SendArgs.SetBuffer(package, 0, package.Length); //设置socekt操作的缓存区
+            bool result = clientSocket.SendAsync(SendArgs);
+            if (result == false)
+            {
+                ProcessSend();
+            }
+        }
+        /// <summary>
+        /// 异步发送处理完成时的回调
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SendArgs_Completed(object sender,SocketAsyncEventArgs e)
+        {
+            ProcessSend();
+        }
+        /// <summary>
+        /// 发送完成时调用
+        /// </summary>
+        private void ProcessSend()
+        {
+            if (SendArgs.SocketError != SocketError.Success) //发送是否出错
+            {
+                Tool.PrintMessage("发送出错，客户端断开连接");
+                sendDiconnect(this, SendArgs.SocketError.ToString());
+            }
+            else
+            {
+                Send();
+            }
+        }
+
+        #endregion
     }
 }

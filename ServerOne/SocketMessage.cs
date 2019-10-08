@@ -28,7 +28,13 @@ namespace ServerOne
         {
 
         }
-        public SocketMessage(int opCode,int subCode,int value)
+        /// <summary>
+        /// 构建SocketMessage
+        /// </summary>
+        /// <param name="opCode">操作数</param>
+        /// <param name="subCode">子操作</param>
+        /// <param name="value">参数</param>
+        public SocketMessage(int opCode,int subCode,object value)
         {
             this.opCode = opCode;
             this.subCode = subCode;

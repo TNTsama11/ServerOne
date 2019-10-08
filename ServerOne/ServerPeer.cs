@@ -49,6 +49,7 @@ public class ServerPeer
                     tempClientPeer = new ClientPeer();                    
                     tempClientPeer.receiveArgs.Completed += Receive_Completed; //结束时回调方法
                     tempClientPeer.receiveCompleted = receiveCompleted;
+                    tempClientPeer.sendDiconnect = Disconnect;
                     Tool.PrintMessage("初始化客户端对象"+i+"，存入连接池");
                     clientPeerPool.Enqueue(tempClientPeer);//入队
                 }
@@ -84,7 +85,6 @@ public class ServerPeer
                 e = new SocketAsyncEventArgs();
                 e.Completed += Accept_Completed; //结束时回调方法
             }
-            acceptSemaphore.WaitOne(); //限制线程访问
 
             Tool.PrintMessage("serverSocket.AcceptAsync():开始异步接受客户端连接");
             bool result= serverSocket.AcceptAsync(e); //返回true表示还在执行，返回false表示执行完成
@@ -100,6 +100,7 @@ public class ServerPeer
         /// <param name="e"></param>
         private void ProcessAccpet(SocketAsyncEventArgs e)
         {
+            acceptSemaphore.WaitOne(); //限制访问线程
             Tool.PrintMessage("执行ProcessAccpet():开始处理客户端的连接请求");
             ClientPeer client = clientPeerPool.Dequeue(); //从队列中取出一个
             client.clientSocket=e.AcceptSocket;
@@ -119,11 +120,32 @@ public class ServerPeer
         }
         #endregion
 
-        #region 发送数据
-
-        #endregion
-
         #region 断开连接
+
+        /// <summary>
+        /// 断开连接
+        /// </summary>
+        /// <param name="client">客户端连接对象</param>
+        /// <param name="reason">断开原因</param>
+        public void Disconnect(ClientPeer client,string reason)
+        {
+            try
+            {
+                if (client == null)
+                {
+                    throw new Exception("当前连接对象为空，无法断开连接");
+                }
+
+                client.Disconnect(); //断开连接
+                clientPeerPool.Enqueue(client); //回收连接对象
+                acceptSemaphore.Release(); //释放一个信号供其他连接使用
+            }
+            catch (Exception ex)
+            {
+                Tool.PrintMessage(ex.Message);
+            }
+        }
+
 
         #endregion
 
@@ -171,11 +193,11 @@ public class ServerPeer
             {
                 if (client.receiveArgs.SocketError==SocketError.Success) //socket操作正常但是数据为0客户端主动断开连接
                 {
-
+                    Disconnect(client, "客户端主动断开连接");
                 }
                 else //网络异常被动断开
                 {
-
+                    Disconnect(client, "客户端被动断开连接："+client.receiveArgs.SocketError.ToString());
                 }
             }
         }

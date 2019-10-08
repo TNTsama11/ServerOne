@@ -74,17 +74,17 @@ namespace ServerOne
         /// <summary>
         /// 将SocketMessage转成字节数组发送
         /// </summary>
-        /// <param name="msg"></param>
+        /// <param name="smg"></param>
         /// <returns></returns>
-        public static byte[] EncodeMessage(SocketMessage msg)
+        public static byte[] EncodeMessage(SocketMessage smg)
         {
             MemoryStream ms = new MemoryStream();
             BinaryWriter bw = new BinaryWriter(ms);
-            bw.Write(msg.opCode); //写入顺序和读取顺序一致
-            bw.Write(msg.subCode);
-            if (msg.value != null)
+            bw.Write(smg.opCode); //写入顺序和读取顺序一致
+            bw.Write(smg.subCode);
+            if (smg.value != null)
             {
-                byte[] valueBytes = EncodeObject(msg.value);
+                byte[] valueBytes = EncodeObject(smg.value);
                 bw.Write(valueBytes);
             }
             byte[] data = new byte[ms.Length];
@@ -102,18 +102,18 @@ namespace ServerOne
         {
             MemoryStream ms = new MemoryStream(data);
             BinaryReader br = new BinaryReader(ms);
-            SocketMessage msg = new SocketMessage();
-            msg.opCode = br.ReadInt32();
-            msg.subCode = br.ReadInt32();
+            SocketMessage smg = new SocketMessage();
+            smg.opCode = br.ReadInt32();
+            smg.subCode = br.ReadInt32();
             if (ms.Length > ms.Position) //如果长度大于当前读取位置说明后面有参数
             {
                 byte[] valueBytes = br.ReadBytes((int)(ms.Length - ms.Position));
                 object value = DecodeObject(valueBytes);
-                msg.value = value;
+                smg.value = value;
             }
             br.Close();
             ms.Close();
-            return msg;
+            return smg;
         }
 
         #endregion
@@ -128,7 +128,7 @@ namespace ServerOne
         {
             using (MemoryStream ms=new MemoryStream())
             {
-                BinaryFormatter bf = new BinaryFormatter();
+                BinaryFormatter bf = new BinaryFormatter(); //C#提供的序列化与反序列化类
                 bf.Serialize(ms, value);
                 byte[] valueBytes = new byte[ms.Length];
                 Buffer.BlockCopy(ms.GetBuffer(), 0, valueBytes, 0, (int)ms.Length);
