@@ -25,6 +25,19 @@ public class ServerPeer
         /// 客户端连接池
         /// </summary>
         private ClientPeerPool clientPeerPool;
+        /// <summary>
+        /// 应用层
+        /// 因为应用层不固定所以抽象为一个接口
+        /// </summary>
+        private IApplication application; 
+        /// <summary>
+        /// 设置应用层
+        /// </summary>
+        /// <param name="app"></param>
+        public void SetApplication(IApplication app)
+        {
+            application = app;
+        }
 
         /// <summary>
         /// 开启服务器的方法
@@ -104,6 +117,8 @@ public class ServerPeer
             Tool.PrintMessage("执行ProcessAccpet():开始处理客户端的连接请求");
             ClientPeer client = clientPeerPool.Dequeue(); //从队列中取出一个
             client.clientSocket=e.AcceptSocket;
+            application.OnConnect(client);
+
             StartReceive(client); //开始接收数据
             e.AcceptSocket = null; //重置e.AcceptSocket
             StartAccept(e);        //递归调用 参数可以传null，但是每次会new耗费性能所以复用e
@@ -135,7 +150,7 @@ public class ServerPeer
                 {
                     throw new Exception("当前连接对象为空，无法断开连接");
                 }
-
+                application.OnDisconnect(client);
                 client.Disconnect(); //断开连接
                 clientPeerPool.Enqueue(client); //回收连接对象
                 acceptSemaphore.Release(); //释放一个信号供其他连接使用
@@ -214,10 +229,11 @@ public class ServerPeer
         /// 一个数据包解析完成后调用
         /// </summary>
         /// <param name="client"></param>
-        /// <param name="value"></param>
-        private void receiveCompleted(ClientPeer client,SocketMessage msg)
+        /// <param name="smg"></param>
+        private void receiveCompleted(ClientPeer client,SocketMessage smg)
         {
             //给应用层使用
+            application.OnReceive(client,smg);
         }
         #endregion
     }

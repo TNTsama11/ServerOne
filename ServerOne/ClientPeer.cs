@@ -91,6 +91,8 @@ namespace ServerOne
         {
             dataCache.Clear(); //清空数据缓存区
             isReceiveProcess = false;
+            sendQueue.Clear(); //清空消息队列
+            isSendProcess = false;
 
             clientSocket.Shutdown(SocketShutdown.Both);
             clientSocket.Close();

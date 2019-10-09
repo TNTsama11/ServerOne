@@ -1,2 +1,7 @@
 F:\unity\新建文件夹 (5)\ServerOne\ServerOne\bin\Debug\ServerOne.exe.config
 F:\Git\ServerOne\ServerOne\bin\Debug\ServerOne.exe.config
+F:\Git\ServerOne\ServerOne\bin\Debug\ServerOne.exe
+F:\Git\ServerOne\ServerOne\bin\Debug\ServerOne.pdb
+F:\Git\ServerOne\ServerOne\obj\Debug\ServerOne.csprojResolveAssemblyReference.cache
+F:\Git\ServerOne\ServerOne\obj\Debug\ServerOne.exe
+F:\Git\ServerOne\ServerOne\obj\Debug\ServerOne.pdb
