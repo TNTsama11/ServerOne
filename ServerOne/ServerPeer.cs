@@ -117,7 +117,7 @@ public class ServerPeer
             Tool.PrintMessage("执行ProcessAccpet():开始处理客户端的连接请求");
             ClientPeer client = clientPeerPool.Dequeue(); //从队列中取出一个
             client.clientSocket=e.AcceptSocket;
-            application.OnConnect(client);
+          //  application.OnConnect(client);
 
             StartReceive(client); //开始接收数据
             e.AcceptSocket = null; //重置e.AcceptSocket

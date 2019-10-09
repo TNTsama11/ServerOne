@@ -45,16 +45,22 @@
   <ItemGroup>
     <Compile Include="ClientPeer.cs" />
     <Compile Include="ClientPeerPool.cs" />
+    <Compile Include="Concurrent\ConcurrentInt.cs" />
     <Compile Include="EncodeTool.cs" />
+    <Compile Include="IApplication.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerPeer.cs" />
+    <Compile Include="SingleExcute.cs" />
     <Compile Include="SocketMessage.cs" />
+    <Compile Include="mTimer\TimerManager.cs" />
+    <Compile Include="mTimer\TimerModel.cs" />
     <Compile Include="Tool.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
