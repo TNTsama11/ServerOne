@@ -12,6 +12,7 @@ namespace GameServer
         static void Main(string[] args)
         {
             ServerPeer server = new ServerPeer();
+            server.SetApplication(new NetMsgCenter()); //绑定应用层
             server.Start(2333, 10);
             Console.ReadKey();
         }

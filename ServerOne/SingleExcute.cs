@@ -20,7 +20,10 @@ namespace ServerOne
         /// 互斥锁
         /// </summary>
         public Mutex mutex;
-
+        public SingleExcute()
+        {
+            mutex = new Mutex();
+        }
         /// <summary>
         /// 单线程逻辑
         /// </summary>
@@ -29,7 +32,9 @@ namespace ServerOne
         {
             lock (this)
             {
+                mutex.WaitOne();
                 executeDelegate();
+                mutex.ReleaseMutex();
             }
         }
 
