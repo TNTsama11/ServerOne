@@ -19,6 +19,7 @@ namespace ServerOne
         {
             receiveArgs = new SocketAsyncEventArgs();
             receiveArgs.UserToken = this;
+            receiveArgs.SetBuffer(new byte[1024], 0, 1024);
             SendArgs = new SocketAsyncEventArgs();
             SendArgs.Completed += SendArgs_Completed;
         }

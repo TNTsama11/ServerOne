@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using ServerOne;
+using GameServer.Logic;
+using CommunicationProtocol.Code;
 
 namespace GameServer
 {
@@ -12,14 +13,23 @@ namespace GameServer
     /// </summary>
     public class NetMsgCenter : IApplication
     {
+
+        IHandler transform = new TransformHandler();
+
         public void OnDisconnect(ClientPeer client)
         {
-            throw new NotImplementedException();
+            transform.OnDisconnect(client);
         }
 
         public void OnReceive(ClientPeer client, SocketMessage smg)
         {
-            throw new NotImplementedException();
+            switch (smg.opCode) //通过操作码判断是给什么模块的数据
+            {
+                case OpCode.TRANSFORM:
+                    transform.OnReceive(client, smg.subCode,smg.value);
+                    break;
+                default: break;
+            }
         }
     }
 }

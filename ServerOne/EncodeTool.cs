@@ -94,7 +94,7 @@ namespace ServerOne
             return data;
         }
         /// <summary>
-        /// 将收到的字节数组转成SocketMessage对象
+        /// 将字节数组转成SocketMessage对象
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>

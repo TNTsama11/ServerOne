@@ -117,6 +117,7 @@ public class ServerPeer
             Tool.PrintMessage("执行ProcessAccpet():开始处理客户端的连接请求");
             ClientPeer client = clientPeerPool.Dequeue(); //从队列中取出一个
             client.clientSocket=e.AcceptSocket;
+            Tool.PrintMessage("客户端连接成功："+client.clientSocket.RemoteEndPoint.ToString());
           //  application.OnConnect(client);
 
             StartReceive(client); //开始接收数据
@@ -150,6 +151,7 @@ public class ServerPeer
                 {
                     throw new Exception("当前连接对象为空，无法断开连接");
                 }
+                Tool.PrintMessage("客户端"+client.clientSocket.RemoteEndPoint.ToString()+"断开了连接："+reason);
                 application.OnDisconnect(client);
                 client.Disconnect(); //断开连接
                 clientPeerPool.Enqueue(client); //回收连接对象
