@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Code\AccCode.cs" />
+    <Compile Include="Code\MatchCode.cs" />
     <Compile Include="Code\OpCode.cs" />
     <Compile Include="Code\TransformCode.cs" />
     <Compile Include="Code\UserCode.cs" />
