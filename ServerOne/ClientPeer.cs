@@ -174,6 +174,7 @@ namespace ServerOne
         /// </summary>
         private void ProcessSend()
         {
+           
             if (SendArgs.SocketError != SocketError.Success) //发送是否出错
             {
                 Tool.PrintMessage("发送出错，客户端断开连接");

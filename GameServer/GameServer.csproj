@@ -43,8 +43,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cache\AccCache.cs" />
+    <Compile Include="Cache\Caches.cs" />
+    <Compile Include="Cache\UserCache.cs" />
+    <Compile Include="Logic\AccHandler.cs" />
     <Compile Include="Logic\IHandler.cs" />
     <Compile Include="Logic\TransformHandler.cs" />
+    <Compile Include="Model\UserModel.cs" />
     <Compile Include="NetMsgCenter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -62,10 +67,7 @@
       <Name>ServerOne</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Cache\" />
-    <Folder Include="Model\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

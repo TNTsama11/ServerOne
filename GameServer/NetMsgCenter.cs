@@ -14,11 +14,13 @@ namespace GameServer
     public class NetMsgCenter : IApplication
     {
 
-        IHandler transform = new TransformHandler();
+        IHandler transformHandler = new TransformHandler();
+        IHandler accountHandler = new AccHandler();
 
         public void OnDisconnect(ClientPeer client)
         {
-            transform.OnDisconnect(client);
+            transformHandler.OnDisconnect(client);
+            accountHandler.OnDisconnect(client);
         }
 
         public void OnReceive(ClientPeer client, SocketMessage smg)
@@ -26,7 +28,10 @@ namespace GameServer
             switch (smg.opCode) //通过操作码判断是给什么模块的数据
             {
                 case OpCode.TRANSFORM:
-                    transform.OnReceive(client, smg.subCode,smg.value);
+                    transformHandler.OnReceive(client, smg.subCode,smg.value);                    
+                    break;
+                case OpCode.ACCOUNT:
+                    accountHandler.OnReceive(client, smg.subCode, smg.value);
                     break;
                 default: break;
             }

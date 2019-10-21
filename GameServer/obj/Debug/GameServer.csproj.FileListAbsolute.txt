@@ -7,3 +7,5 @@ F:\Git\ServerOne\GameServer\bin\Debug\ServerOne.pdb
 F:\Git\ServerOne\GameServer\obj\Debug\GameServer.csprojResolveAssemblyReference.cache
 F:\Git\ServerOne\GameServer\obj\Debug\GameServer.exe
 F:\Git\ServerOne\GameServer\obj\Debug\GameServer.pdb
+F:\Git\ServerOne\GameServer\bin\Debug\CommunicationProtocol.dll
+F:\Git\ServerOne\GameServer\bin\Debug\CommunicationProtocol.pdb

@@ -44,7 +44,7 @@ namespace ServerOne
         {
             if (dataCache.Count < 4) //如果数据缓存长度小于四字节int长度，无法构成数据包
             {
-                Tool.PrintMessage("数据包长度小于4字节，无法构成数据包");
+                //Tool.PrintMessage("数据包长度小于4字节，无法构成数据包");
                 return null;
             }
             using (MemoryStream ms = new MemoryStream(dataCache.ToArray()))
