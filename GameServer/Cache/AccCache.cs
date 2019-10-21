@@ -41,12 +41,13 @@ namespace GameServer.Cache
         /// <summary>
         /// 玩家上线方法
         /// </summary>
-        /// <param name="clinet"></param>
+        /// <param name="client"></param>
         /// <param name="account"></param>
-        public void Onlie(ClientPeer clinet,string account)
+        public void Onlie(ClientPeer client,string account)
         {
-            accClientDict.Add(account, clinet);
-            clientAccDict.Add(clinet, account);
+            accClientDict.Add(account, client);
+            clientAccDict.Add(client, account);
+            Tool.PrintMessage("客户端" + client.clientSocket.RemoteEndPoint.ToString() + "的账号已上线");
         }
         /// <summary>
         /// 玩家下线方法

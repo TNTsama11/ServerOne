@@ -49,6 +49,7 @@
     <Compile Include="Logic\AccHandler.cs" />
     <Compile Include="Logic\IHandler.cs" />
     <Compile Include="Logic\TransformHandler.cs" />
+    <Compile Include="Logic\UserHandler.cs" />
     <Compile Include="Model\UserModel.cs" />
     <Compile Include="NetMsgCenter.cs" />
     <Compile Include="Program.cs" />

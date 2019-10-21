@@ -44,7 +44,9 @@
     <Compile Include="Code\AccCode.cs" />
     <Compile Include="Code\OpCode.cs" />
     <Compile Include="Code\TransformCode.cs" />
+    <Compile Include="Code\UserCode.cs" />
     <Compile Include="Dto\TransformDto.cs" />
+    <Compile Include="Dto\UserDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

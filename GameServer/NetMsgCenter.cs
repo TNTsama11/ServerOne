@@ -16,11 +16,13 @@ namespace GameServer
 
         IHandler transformHandler = new TransformHandler();
         IHandler accountHandler = new AccHandler();
+        IHandler userHandler = new UserHandler();
 
         public void OnDisconnect(ClientPeer client)
         {
             transformHandler.OnDisconnect(client);
             accountHandler.OnDisconnect(client);
+            userHandler.OnDisconnect(client);
         }
 
         public void OnReceive(ClientPeer client, SocketMessage smg)
@@ -32,6 +34,9 @@ namespace GameServer
                     break;
                 case OpCode.ACCOUNT:
                     accountHandler.OnReceive(client, smg.subCode, smg.value);
+                    break;
+                case OpCode.USER:
+                    userHandler.OnReceive(client, smg.subCode, smg.value);
                     break;
                 default: break;
             }

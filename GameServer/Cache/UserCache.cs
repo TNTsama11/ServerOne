@@ -7,6 +7,9 @@ using ServerOne;
 
 namespace GameServer.Cache
 {
+    /// <summary>
+    /// 玩家数据缓存层
+    /// </summary>
     public class UserCache
     {
         /// <summary>
@@ -97,7 +100,10 @@ namespace GameServer.Cache
             clientAccountDict.Add(client, acc);
             accountClientDict.Add(acc, client);
         }
-
+        /// <summary>
+        /// 下线
+        /// </summary>
+        /// <param name="client"></param>
         public void Offline(ClientPeer client)
         {
             string acc = clientAccountDict[client];

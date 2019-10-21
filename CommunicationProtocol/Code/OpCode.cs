@@ -13,5 +13,9 @@ namespace CommunicationProtocol.Code
         /// 账号信息模块
         /// </summary>
         public const int ACCOUNT = 1;
+        /// <summary>
+        /// 玩家信息模块
+        /// </summary>
+        public const int USER = 2;
     }
 }
