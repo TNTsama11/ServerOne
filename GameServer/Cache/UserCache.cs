@@ -137,5 +137,21 @@ namespace GameServer.Cache
             }
 
         }
+        /// <summary>
+        /// 通过连接对象获取Account
+        /// </summary>
+        /// <param name="client"></param>
+        /// <returns></returns>
+        public string GetAccByClient(ClientPeer client)
+        {
+            if (clientAccountDict.ContainsKey(client))
+            {
+                return clientAccountDict[client];
+            }
+            else
+            {
+                throw new Exception("没有此连接对象的Account");
+            }
+        }
     }
 }

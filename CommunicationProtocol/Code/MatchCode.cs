@@ -15,6 +15,12 @@ namespace CommunicationProtocol.Code
 
         public const int MATCH_EXIT_SREP = 3;
 
-        public const int MATCH_START = 4;
+        public const int MATCH_EXIT_BROA = 4;
+
+        public const int MATCH_START_BROA = 5;
+
+        public const int MATCH_READY_CREQ = 6;
+
+        public const int MATCH_READY_BROA = 7;
     }
 }
