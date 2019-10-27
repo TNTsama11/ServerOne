@@ -11,16 +11,20 @@ namespace CommunicationProtocol.Code
 
         public const int MATCH_ENTER_SREP = 1;
 
-        public const int MATCH_EXIT_CREQ = 2;
+        public const int MATCH_ENTER_BROA = 2;
 
-        public const int MATCH_EXIT_SREP = 3;
+        public const int MATCH_EXIT_CREQ = 3;
 
-        public const int MATCH_EXIT_BROA = 4;
+        public const int MATCH_EXIT_SREP = 4;
 
-        public const int MATCH_START_BROA = 5;
+        public const int MATCH_EXIT_BROA = 5;
 
-        public const int MATCH_READY_CREQ = 6;
+        public const int MATCH_START_BROA = 6;
 
-        public const int MATCH_READY_BROA = 7;
+        public const int MATCH_READY_CREQ = 7;
+
+        public const int MATCH_READY_BROA = 8;
+
+        public const int MATCH_READY_SREP = 9;
     }
 }

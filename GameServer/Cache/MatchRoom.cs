@@ -31,7 +31,7 @@ namespace GameServer.Cache
         /// <returns></returns>
         public bool IsFull()
         {
-            return UserClientDict.Count == 5;
+            return UserClientDict.Count == 8;
         }
         /// <summary>
         /// 房间是否为空
@@ -47,7 +47,7 @@ namespace GameServer.Cache
         /// <returns></returns>
         public bool IsAllReady()
         {
-            return ReadyUserList.Count == UserClientDict.Count;
+            return ReadyUserList.Count >= 2&& ReadyUserList.Count==UserClientDict.Count;
         }
         /// <summary>
         /// 进入房间
@@ -76,12 +76,17 @@ namespace GameServer.Cache
         /// <summary>
         /// 广播房间内玩家信息
         /// </summary>
-        public void BroadcastUserInfo(int opCode,int subCode,object value)
+        public void BroadcastUserInfo(int opCode,int subCode,object value,ClientPeer client=null)
         {
-            foreach(var client in UserClientDict.Values)
+            Tool.PrintMessage("执行BroadcastUserInfo()");
+            foreach(var c in UserClientDict.Values)
             {
-                //TODO
-                //遍历房间内玩家列表
+                if (c == client)
+                {
+                    continue;
+                }
+                Tool.PrintMessage("向" + c.clientSocket.RemoteEndPoint.ToString() + "广播信息");
+                c.SendMessage(opCode, subCode, value);
             }
         }
     }

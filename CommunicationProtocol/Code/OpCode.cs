@@ -17,5 +17,7 @@ namespace CommunicationProtocol.Code
         /// 玩家信息模块
         /// </summary>
         public const int USER = 2;
+
+        public const int MATCH = 3;
     }
 }

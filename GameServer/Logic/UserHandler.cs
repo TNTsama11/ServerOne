@@ -41,6 +41,9 @@ namespace GameServer.Logic
                 case UserCode.USER_UPLOADINFO_CREQ:
                     ReceiveUserInfo(client, value as UserDto);
                     break;
+                case UserCode.USER_OFFLINE_CREQ:
+                    OffLine(client);
+                    break;
                 default:
                     break;
             }
@@ -61,9 +64,26 @@ namespace GameServer.Logic
                     return;
                 }
                 Tool.PrintMessage("客户端" + client.clientSocket.RemoteEndPoint.ToString() + "的角色已上线");
+                
                 userCache.Online(client, account);
+
                 client.SendMessage(OpCode.USER, UserCode.USER_ONLIEN_SREP, 0);//上线成功
             });
+        }
+
+        private void OffLine(ClientPeer client)
+        {
+            if (!accCache.IsOnline(client))
+            {
+                //客户端Account不在线
+                return;
+            }
+            string account = accCache.GetAcc(client);
+            if (!userCache.IsExist(account))
+            {               
+                return;
+            }
+            userCache.Offline(client);
         }
 
         private void GetUserInfo(ClientPeer client)

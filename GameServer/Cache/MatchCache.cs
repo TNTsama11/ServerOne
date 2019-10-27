@@ -76,6 +76,7 @@ namespace GameServer.Cache
         /// <returns></returns>
         public MatchRoom Exit(string acc)
         {
+            Tool.PrintMessage("执行MatchCache.Exit()");
             int id = userRoomDict[acc];
             MatchRoom room = roomRoomModelDict[id];
             room.ExitRoom(acc);

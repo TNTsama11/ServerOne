@@ -46,6 +46,7 @@
     <Compile Include="Code\OpCode.cs" />
     <Compile Include="Code\TransformCode.cs" />
     <Compile Include="Code\UserCode.cs" />
+    <Compile Include="Dto\MatchDto.cs" />
     <Compile Include="Dto\TransformDto.cs" />
     <Compile Include="Dto\UserDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

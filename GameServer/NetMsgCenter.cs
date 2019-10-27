@@ -17,12 +17,15 @@ namespace GameServer
         IHandler transformHandler = new TransformHandler();
         IHandler accountHandler = new AccHandler();
         IHandler userHandler = new UserHandler();
+        IHandler matchHandler = new MatchHandler();
 
         public void OnDisconnect(ClientPeer client)
         {
-            transformHandler.OnDisconnect(client);
-            accountHandler.OnDisconnect(client);
+            //顺序要注意依赖关系，越底层的越靠后执行
+            matchHandler.OnDisconnect(client);
             userHandler.OnDisconnect(client);
+            transformHandler.OnDisconnect(client);
+            accountHandler.OnDisconnect(client);                        
         }
 
         public void OnReceive(ClientPeer client, SocketMessage smg)
@@ -37,6 +40,9 @@ namespace GameServer
                     break;
                 case OpCode.USER:
                     userHandler.OnReceive(client, smg.subCode, smg.value);
+                    break;
+                case OpCode.MATCH:
+                    matchHandler.OnReceive(client, smg.subCode, smg.value);
                     break;
                 default: break;
             }

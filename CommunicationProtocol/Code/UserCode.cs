@@ -31,5 +31,9 @@ namespace CommunicationProtocol.Code
         /// 服务器对上传完成的响应
         /// </summary>
         public const int USER_UPLOADINFO_SREP = 5;
+
+        public const int USER_OFFLINE_CREQ = 6;
+
+        public const int USER_OFFLIEN_SREP = 7;
     }
 }
