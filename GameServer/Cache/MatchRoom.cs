@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace GameServer.Cache
 {
@@ -63,7 +62,7 @@ namespace GameServer.Cache
         /// <param name="acc"></param>
         public void ExitRoom(string acc)
         {
-            UserClientDict.Remove(acc);
+            UserClientDict.Remove(acc);            
         }
         /// <summary>
         /// 准备
@@ -72,6 +71,14 @@ namespace GameServer.Cache
         public void Ready(string acc)
         {
             ReadyUserList.Add(acc);
+        }
+        /// <summary>
+        /// 取消准备
+        /// </summary>
+        /// <param name="acc"></param>
+        public void NotReady(string acc)
+        {
+            ReadyUserList.Remove(acc);
         }
         /// <summary>
         /// 广播房间内玩家信息

@@ -6,3 +6,4 @@ F:\unity\MessageSystemDemo\Assets\Plugins\CommunicationProtocol.dll
 F:\unity\MessageSystemDemo\Assets\Plugins\CommunicationProtocol.pdb
 F:\Git\ServerOne\CommunicationProtocol\obj\Debug\CommunicationProtocol.csprojAssemblyReference.cache
 F:\Git\ServerOne\CommunicationProtocol\obj\Debug\CommunicationProtocol.csproj.CoreCompileInputs.cache
+F:\Git\ServerOne\CommunicationProtocol\obj\Debug\CommunicationProtocol.csproj.CopyComplete

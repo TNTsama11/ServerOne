@@ -45,10 +45,13 @@
   <ItemGroup>
     <Compile Include="Cache\AccCache.cs" />
     <Compile Include="Cache\Caches.cs" />
+    <Compile Include="Cache\GameCache.cs" />
+    <Compile Include="Cache\GameRoom.cs" />
     <Compile Include="Cache\MatchCache.cs" />
     <Compile Include="Cache\MatchRoom.cs" />
     <Compile Include="Cache\UserCache.cs" />
     <Compile Include="Logic\AccHandler.cs" />
+    <Compile Include="Logic\GameHandler.cs" />
     <Compile Include="Logic\IHandler.cs" />
     <Compile Include="Logic\MatchHandler.cs" />
     <Compile Include="Logic\TransformHandler.cs" />

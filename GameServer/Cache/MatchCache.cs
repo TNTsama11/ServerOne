@@ -80,7 +80,12 @@ namespace GameServer.Cache
             int id = userRoomDict[acc];
             MatchRoom room = roomRoomModelDict[id];
             room.ExitRoom(acc);
-            userRoomDict.Remove(acc);
+            if (room.ReadyUserList.Contains(acc))
+            {
+                room.NotReady(acc);
+            }
+                userRoomDict.Remove(acc);
+            
             if (room.IsEmpty())
             {
                 roomRoomModelDict.Remove(id);
@@ -111,6 +116,7 @@ namespace GameServer.Cache
             }
             room.UserClientDict.Clear();
             room.ReadyUserList.Clear();
+            //重用房间？存疑
         }
     }
 }

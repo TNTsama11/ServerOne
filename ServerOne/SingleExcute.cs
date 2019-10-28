@@ -12,13 +12,13 @@ namespace ServerOne
     /// <summary>
     /// 单线程方法
     /// 保证应用层单线程调用传递的方法
-    /// 避免多线程时发生的一些错误
+    /// 避免多线程同时访问数据资源产生错误
     /// </summary>
     public class SingleExcute
     {
         //单例 线程安全
         private static SingleExcute instance = null;
-        private static object L = new object();
+        private static readonly object L = new object();
         public static SingleExcute Instance
         {
             get

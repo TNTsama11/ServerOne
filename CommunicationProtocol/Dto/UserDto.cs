@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace CommunicationProtocol.Dto
 {
+    /// <summary>
+    /// 玩家数据传输对象
+    /// </summary>
     [Serializable]
     public class UserDto
     {

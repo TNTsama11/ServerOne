@@ -50,6 +50,9 @@ namespace GameServer.Logic
                 case MatchCode.MATCH_READY_CREQ:
                     Ready(client);
                     break;
+                case MatchCode.MATCH_NOTREADY_CREQ:
+                    NotReady(client);
+                    break;
                 default:
                     break;
             }
@@ -131,6 +134,7 @@ namespace GameServer.Logic
                 {
                     return;
                 }
+                Tool.PrintMessage("玩家：" + client.clientSocket.RemoteEndPoint.ToString() + "准备");
                 MatchRoom room = matchCache.GetRoom(acc);
                 room.Ready(acc);
                 //TODO
@@ -140,12 +144,36 @@ namespace GameServer.Logic
                 {
                     //TODO
                     //广播要开始了
+                    Tool.PrintMessage("准备人数达到游戏开始条件");
                     room.BroadcastUserInfo(OpCode.MATCH, MatchCode.MATCH_START_BROA, null);
                     //将数据托付给GameRoom
                     //开始游戏
                     //清理房间
                     matchCache.ClearRoom(room);
                 }
+            });
+        }
+        /// <summary>
+        /// 取消准备
+        /// </summary>
+        /// <param name="client"></param>
+        private void NotReady(ClientPeer client)
+        {
+            SingleExcute.Instance.Exeute(delegate() 
+            {
+                if (!userCache.IsOnline(client))
+                {
+                    return;
+                }
+                string acc = userCache.GetAccByClient(client);
+                if (!matchCache.IsMatchRoom(acc))
+                {
+                    return;
+                }
+                Tool.PrintMessage("玩家：" + client.clientSocket.RemoteEndPoint.ToString() + "取消准备");
+                MatchRoom room = matchCache.GetRoom(acc);
+                room.NotReady(acc);
+                room.BroadcastUserInfo(OpCode.MATCH, MatchCode.MATCH_NOTREADY_BROA, acc, client);
             });
         }
     }

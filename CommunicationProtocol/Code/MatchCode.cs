@@ -26,5 +26,11 @@ namespace CommunicationProtocol.Code
         public const int MATCH_READY_BROA = 8;
 
         public const int MATCH_READY_SREP = 9;
+
+        public const int MATCH_NOTREADY_CREQ = 10;
+
+        public const int MATCH_NOTREADY_BROA = 11;
+
+        public const int MATCH_NOTREADY_SREP = 12;
     }
 }

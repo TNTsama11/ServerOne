@@ -14,11 +14,13 @@ namespace GameServer.Cache
         public static AccCache acc { get; set; }
         public static UserCache user { get; set; }
         public static MatchCache match { get; set; }
+        public static GameCache game { get; set; }
         static Caches()
         {
             acc = new AccCache();
             user = new UserCache();
             match = new MatchCache();
+            game = new GameCache();
         }
     }
 }
