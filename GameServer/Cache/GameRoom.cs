@@ -15,6 +15,10 @@ namespace GameServer.Cache
         /// 房间内玩家Account与连接对象的字典
         /// </summary>
         public Dictionary<string, ClientPeer> UserAccClientDict { get; set; }
+        /// <summary>
+        /// 房间内玩家Account与Transform信息的字典
+        /// </summary>
+        public Dictionary<string,TransformInfo> UserTransDict { get; set; }
         
         public int id { get; set; }
 
@@ -30,7 +34,7 @@ namespace GameServer.Cache
         /// <returns></returns>
         public bool IsFull()
         {
-            return UserAccClientDict.Count == 32;
+            return UserAccClientDict.Count == 8;
         }
         /// <summary>
         /// 游戏房间是否空了
@@ -48,6 +52,8 @@ namespace GameServer.Cache
         public void EnterRoom(string acc,ClientPeer client)
         {
             UserAccClientDict.Add(acc, client);
+            TransformInfo trans = new TransformInfo();
+            UserTransDict.Add(acc, trans);
         }
         /// <summary>
         /// 退出游戏房间
@@ -55,7 +61,45 @@ namespace GameServer.Cache
         public void ExitRoom(string acc)
         {
             UserAccClientDict.Remove(acc);
+            UserTransDict.Remove(acc);
         }
+        /// <summary>
+        /// 刷新玩家位置信息
+        /// </summary>
+        public void RefreshTrans(string acc,float[]pos,float[] rota)
+        {
+            UserTransDict[acc].Change(pos, rota);
+        }
+        public TransformInfo GetTransByAcc(string acc)
+        {
+            return UserTransDict[acc];
+        }
+        public void RefreshTrans(string acc, int[] pos)
+        {
+            UserTransDict[acc].pos[0] = pos[0];
+            UserTransDict[acc].pos[2] = pos[1];
+        }
+        /// <summary>
+        /// 获取一个不和其他玩家冲突的位置（x和z）
+        /// </summary>
+        /// <returns></returns>
+        public int[] GetRandomPosition()
+        {
+            Random ra =new Random(Guid.NewGuid().GetHashCode());
+            int x = ra.Next(-20, 20);
+            int z= ra.Next(-20, 20);
+            foreach(var item in UserTransDict.Values)
+            {
+                if(Math.Abs(x-item.pos[0])>5|| Math.Abs(z - item.pos[2]) > 5)
+                {
+                    int[] xz = new int[2];
+                    xz[0] = x;
+                    xz[1] = z;
+                    return xz;
+                }
+            }
+            return GetRandomPosition();
+        } 
 
         /// <summary>
         /// 广播消息

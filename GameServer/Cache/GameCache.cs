@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using CommunicationProtocol.Dto;
 using ServerOne;
 using ServerOne.Concurrent;
 
@@ -49,11 +50,12 @@ namespace GameServer.Cache
                 UserRoomDict.Add(acc, item.id);
                 return item;
             }//如果满了就新建
-            GameRoom gameRoom = new GameRoom(id.Add_Get());
-            gameRoom.EnterRoom(acc, client);
-            UserRoomDict.Add(acc, gameRoom.id);
-            RoomRoomModelDict.Add(gameRoom.id, gameRoom);
-            return gameRoom;
+            //GameRoom gameRoom = new GameRoom(id.Add_Get());
+            //gameRoom.EnterRoom(acc, client);
+            //UserRoomDict.Add(acc, gameRoom.id);
+            //RoomRoomModelDict.Add(gameRoom.id, gameRoom);
+            //return gameRoom;
+            return null; //没有房间就返回空 然后去匹配房间等
         }
         /// <summary>
         /// 退出
@@ -95,6 +97,26 @@ namespace GameServer.Cache
                 UserRoomDict.Remove(item);
             }
             room.UserAccClientDict.Clear();
+        }
+        /// <summary>
+        /// 创建一个游戏房间
+        /// </summary>
+        public GameRoom CreatGameRoom()
+        {
+            GameRoom gameRoom = new GameRoom(id.Add_Get());
+            RoomRoomModelDict.Add(gameRoom.id, gameRoom);
+            return gameRoom;
+        }
+        /// <summary>
+        /// 向房间里添加玩家
+        /// </summary>
+        /// <param name="acc"></param>
+        /// <param name="client"></param>
+        /// <param name="room"></param>
+        public void AddPlayerToRoom(string acc,ClientPeer client,GameRoom room)
+        {
+            room.UserAccClientDict.Add(acc, client);
+            UserRoomDict.Add(acc, room.id);
         }
     }
 

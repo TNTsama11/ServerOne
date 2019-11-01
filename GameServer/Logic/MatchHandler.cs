@@ -19,6 +19,7 @@ namespace GameServer.Logic
 
         private MatchCache matchCache = Caches.match;
         private UserCache userCache = Caches.user;
+        private GameCache gameCache = Caches.game;
 
         public void OnDisconnect(ClientPeer client)
         {
@@ -137,17 +138,21 @@ namespace GameServer.Logic
                 Tool.PrintMessage("玩家：" + client.clientSocket.RemoteEndPoint.ToString() + "准备");
                 MatchRoom room = matchCache.GetRoom(acc);
                 room.Ready(acc);
-                //TODO
                 //向房间内广播这个玩家准备了
                 room.BroadcastUserInfo(OpCode.MATCH, MatchCode.MATCH_READY_BROA, acc, client);
                 if(room.IsAllReady())//准备人数是否达标
                 {
                     //TODO
-                    //广播要开始了
                     Tool.PrintMessage("准备人数达到游戏开始条件");
-                    room.BroadcastUserInfo(OpCode.MATCH, MatchCode.MATCH_START_BROA, null);
+                    //创建一个游戏房间
+                    GameRoom gameRoom = gameCache.CreatGameRoom();
                     //将数据托付给GameRoom
-                    //开始游戏
+                    foreach(var item in room.UserClientDict)
+                    {
+                        gameCache.AddPlayerToRoom(item.Key,item.Value,gameRoom);
+                    }
+                    //广播开始游戏
+                    room.BroadcastUserInfo(OpCode.MATCH, MatchCode.MATCH_START_BROA, null);
                     //清理房间
                     matchCache.ClearRoom(room);
                 }
@@ -176,5 +181,10 @@ namespace GameServer.Logic
                 room.BroadcastUserInfo(OpCode.MATCH, MatchCode.MATCH_NOTREADY_BROA, acc, client);
             });
         }
+
+
+        
+
+
     }
 }

@@ -19,9 +19,18 @@ namespace GameServer.Logic
         private GameCache gameCache = Caches.game;
         private UserCache userCache = Caches.user;
 
+
         public void OnDisconnect(ClientPeer client)
         {
-            
+            if (!userCache.IsOnline(client))
+            {               
+                return;
+            }
+            string acc = userCache.GetAccByClient(client);
+            if (gameCache.IsGameRoom(acc))
+            {
+                Exit(client);
+            }
         }
 
         public void OnReceive(ClientPeer client, int subCode, object value)
@@ -34,7 +43,9 @@ namespace GameServer.Logic
                 case GameCode.GAME_EXIT_CERQ:
                     Exit(client);
                     break;
-                 
+                case GameCode.GAME_SYNC_TRASNFORM_CERQ:
+                    //TODO处理客户端发来的玩家位置信息
+                    break;
                 default:
                     break;
             }
@@ -57,11 +68,26 @@ namespace GameServer.Logic
                     return;
                 }
                 GameRoom gameRoom = gameCache.Enter(acc, client);
+
+                if (gameRoom == null) //如果没找到游戏房间
+                {
+                    //向客户端发送一个空 客户端收到后会向服务器发出进入匹配的请求
+                    client.SendMessage(OpCode.GAME, GameCode.GAME_ENTER_SREP, null);
+                    return;
+                }
+                //给新加入的玩家分配一个初始位置
+                int[] pos = gameRoom.GetRandomPosition();
+                gameRoom.RefreshTrans(acc, pos);
+
                 Tool.PrintMessage("客户端：" + client.clientSocket.RemoteEndPoint.ToString() + "进入游戏,房间ID："+gameRoom.id);
                 UserModel model = userCache.GetModelByAcc(acc);
                 UserDto userdto = new UserDto(model.Account, model.Name, model.IconID, model.ModelID, model.Lv);
                 //将新加入的玩家数据广播
                 gameRoom.Broadcast(OpCode.GAME, GameCode.GAME_ENTER_BROA, userdto, client);
+                //将新加入的玩家的初始位置广播
+                TransformInfo transformInfo = gameRoom.GetTransByAcc(acc);
+                TransformDto transformDto = new TransformDto(acc, transformInfo.pos, transformInfo.rota);
+                gameRoom.Broadcast(OpCode.GAME, GameCode.GAME_SYNC_TRANSFORM_BRAO,transformDto, client);
 
                 GameRoomDto gameRoomDto = new GameRoomDto();
                 foreach(var item in gameRoom.UserAccClientDict.Keys)
@@ -74,7 +100,8 @@ namespace GameServer.Logic
                     UserDto userDto = new UserDto(userModel.Account, userModel.Name, userModel.IconID, userModel.ModelID, userModel.Lv);
                     gameRoomDto.UserAccDtoDict.Add(item, userDto);
                 }
-                client.SendMessage(OpCode.GAME, GameCode.GAME_ENTER_SREP, gameRoomDto); //像新加入的玩家发送当前房间信息
+                client.SendMessage(OpCode.GAME, GameCode.GAME_ENTER_SREP, gameRoomDto); //向新加入的玩家发送当前房间信息
+                
             });
         }
         /// <summary>
@@ -99,5 +126,8 @@ namespace GameServer.Logic
                 gameRoom.Broadcast(OpCode.GAME, GameCode.GAME_EXIT_BROA, acc);
             });
         }
+
+
+
     }
 }

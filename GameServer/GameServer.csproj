@@ -49,12 +49,12 @@
     <Compile Include="Cache\GameRoom.cs" />
     <Compile Include="Cache\MatchCache.cs" />
     <Compile Include="Cache\MatchRoom.cs" />
+    <Compile Include="Cache\TransformInfo.cs" />
     <Compile Include="Cache\UserCache.cs" />
     <Compile Include="Logic\AccHandler.cs" />
     <Compile Include="Logic\GameHandler.cs" />
     <Compile Include="Logic\IHandler.cs" />
     <Compile Include="Logic\MatchHandler.cs" />
-    <Compile Include="Logic\TransformHandler.cs" />
     <Compile Include="Logic\UserHandler.cs" />
     <Compile Include="Model\UserModel.cs" />
     <Compile Include="NetMsgCenter.cs" />
