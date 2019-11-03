@@ -99,9 +99,13 @@ namespace GameServer.Logic
                     UserModel userModel = userCache.GetModelByAcc(item);
                     UserDto userDto = new UserDto(userModel.Account, userModel.Name, userModel.IconID, userModel.ModelID, userModel.Lv);
                     gameRoomDto.UserAccDtoDict.Add(item, userDto);
+                    TransformInfo transformInfo2 = gameRoom.GetTransByAcc(item);
+                    TransformDto transformDto2 = new TransformDto(item, transformInfo.pos, transformInfo.rota);
+                    gameRoomDto.UserTransDto.Add(item, transformDto);
                 }
                 client.SendMessage(OpCode.GAME, GameCode.GAME_ENTER_SREP, gameRoomDto); //向新加入的玩家发送当前房间信息
-                
+                //向新加入的玩家发送分配给他的位置信息
+                client.SendMessage(OpCode.GAME, GameCode.GAME_SPAWN_SREP, transformDto);
             });
         }
         /// <summary>

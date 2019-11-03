@@ -47,6 +47,8 @@ namespace GameServer.Cache
                     continue;
                 }
                 item.EnterRoom(acc, client);
+                int[] pos = item.GetRandomPosition();
+                item.RefreshTrans(acc, pos);
                 UserRoomDict.Add(acc, item.id);
                 return item;
             }//如果满了就新建
@@ -108,14 +110,17 @@ namespace GameServer.Cache
             return gameRoom;
         }
         /// <summary>
-        /// 向房间里添加玩家
+        /// 向房间里添加玩家并分配初始位置
         /// </summary>
         /// <param name="acc"></param>
         /// <param name="client"></param>
         /// <param name="room"></param>
         public void AddPlayerToRoom(string acc,ClientPeer client,GameRoom room)
         {
-            room.UserAccClientDict.Add(acc, client);
+            //room.UserAccClientDict.Add(acc, client);
+            room.EnterRoom(acc, client);
+            int[] pos = room.GetRandomPosition();
+            room.RefreshTrans(acc, pos);
             UserRoomDict.Add(acc, room.id);
         }
     }

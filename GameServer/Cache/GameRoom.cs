@@ -92,13 +92,17 @@ namespace GameServer.Cache
             {
                 if(Math.Abs(x-item.pos[0])>5|| Math.Abs(z - item.pos[2]) > 5)
                 {
-                    int[] xz = new int[2];
-                    xz[0] = x;
-                    xz[1] = z;
-                    return xz;
+                    continue;
+                }
+                else
+                {
+                    return GetRandomPosition();
                 }
             }
-            return GetRandomPosition();
+            int[] xz = new int[2];
+            xz[0] = x;
+            xz[1] = z;
+            return xz;
         } 
 
         /// <summary>

@@ -17,5 +17,7 @@ namespace CommunicationProtocol.Code
         public const int GAME_SYNC_TRANSFORM_BRAO = 7;
         public const int GAME_SYNC_TRANSFORM_SREP = 8;
         public const int GAME_SPAWN_CERQ = 9;
+        public const int GAME_SPAWN_SREP = 10;
+
     }
 }

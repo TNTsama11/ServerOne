@@ -12,10 +12,12 @@ namespace CommunicationProtocol.Dto
     public class GameRoomDto
     {
         public Dictionary<string, UserDto> UserAccDtoDict;
+        public Dictionary<string, TransformDto> UserTransDto;
 
         public GameRoomDto()
         {
             UserAccDtoDict = new Dictionary<string, UserDto>();
+            UserTransDto = new Dictionary<string, TransformDto>();
         }
     }
 }

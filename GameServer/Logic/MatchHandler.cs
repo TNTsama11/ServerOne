@@ -151,9 +151,24 @@ namespace GameServer.Logic
                     {
                         gameCache.AddPlayerToRoom(item.Key,item.Value,gameRoom);
                     }
+                    GameRoomDto gameRoomDto = new GameRoomDto();
+                    foreach (var item in gameRoom.UserAccClientDict.Keys)
+                    {
+                        if (!userCache.IsOnline(item))
+                        {
+                            continue;
+                        }
+                        UserModel userModel = userCache.GetModelByAcc(item);
+                        UserDto userDto = new UserDto(userModel.Account, userModel.Name, userModel.IconID, userModel.ModelID, userModel.Lv);
+                        gameRoomDto.UserAccDtoDict.Add(item, userDto);
+                        TransformInfo transformInfo = gameRoom.GetTransByAcc(item);
+                        TransformDto transformDto = new TransformDto(item,transformInfo.pos,transformInfo.rota);
+                        gameRoomDto.UserTransDto.Add(item, transformDto);
+                    }
                     //广播开始游戏
-                    room.BroadcastUserInfo(OpCode.MATCH, MatchCode.MATCH_START_BROA, null);
-                    //清理房间
+                    //将游戏房间数据广播给房间内的玩家
+                    room.BroadcastUserInfo(OpCode.MATCH, MatchCode.MATCH_START_BROA, gameRoomDto);
+                    //清理匹配房间
                     matchCache.ClearRoom(room);
                 }
             });
