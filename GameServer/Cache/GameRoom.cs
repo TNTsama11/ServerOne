@@ -26,6 +26,7 @@ namespace GameServer.Cache
         {
             this.id = id;
             this.UserAccClientDict = new Dictionary<string, ClientPeer>();
+            this.UserTransDict = new Dictionary<string, TransformInfo>();
         }
 
         /// <summary>
@@ -80,7 +81,7 @@ namespace GameServer.Cache
             UserTransDict[acc].pos[2] = pos[1];
         }
         /// <summary>
-        /// 获取一个不和其他玩家冲突的位置（x和z）
+        /// 生成一个不和其他玩家冲突的位置（x和z）
         /// </summary>
         /// <returns></returns>
         public int[] GetRandomPosition()

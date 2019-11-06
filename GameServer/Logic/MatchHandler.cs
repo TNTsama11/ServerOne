@@ -166,8 +166,10 @@ namespace GameServer.Logic
                         gameRoomDto.UserTransDto.Add(item, transformDto);
                     }
                     //广播开始游戏
+                   // room.BroadcastUserInfo(OpCode.MATCH, MatchCode.MATCH_START_BROA, null);
                     //将游戏房间数据广播给房间内的玩家
-                    room.BroadcastUserInfo(OpCode.MATCH, MatchCode.MATCH_START_BROA, gameRoomDto);
+                    room.BroadcastUserInfo(OpCode.GAME, GameCode.GAME_START_BROA, gameRoomDto);
+                    Tool.PrintMessage("房间：" + gameRoom.id + "开始游戏");
                     //清理匹配房间
                     matchCache.ClearRoom(room);
                 }

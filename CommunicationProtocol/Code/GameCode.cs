@@ -14,10 +14,11 @@ namespace CommunicationProtocol.Code
         public const int GAME_EXIT_SREP = 4;
         public const int GAME_EXIT_BROA = 5;
         public const int GAME_SYNC_TRASNFORM_CERQ = 6;
-        public const int GAME_SYNC_TRANSFORM_BRAO = 7;
+        public const int GAME_SYNC_TRANSFORM_BROA = 7;
         public const int GAME_SYNC_TRANSFORM_SREP = 8;
         public const int GAME_SPAWN_CERQ = 9;
         public const int GAME_SPAWN_SREP = 10;
-
+        public const int GAME_SPAWN_BROA = 11;
+        public const int GAME_START_BROA = 12;
     }
 }

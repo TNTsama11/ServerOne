@@ -13,8 +13,7 @@ namespace GameServer
     /// </summary>
     public class NetMsgCenter : IApplication
     {
-
-        IHandler transformHandler = new TransformHandler();
+        
         IHandler accountHandler = new AccHandler();
         IHandler userHandler = new UserHandler();
         IHandler matchHandler = new MatchHandler();
@@ -26,7 +25,6 @@ namespace GameServer
             matchHandler.OnDisconnect(client);
             gameHandler.OnDisconnect(client);
             userHandler.OnDisconnect(client);
-            transformHandler.OnDisconnect(client);
             accountHandler.OnDisconnect(client);                        
         }
 
