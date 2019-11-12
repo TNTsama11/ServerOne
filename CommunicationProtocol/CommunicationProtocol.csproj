@@ -47,6 +47,9 @@
     <Compile Include="Code\OpCode.cs" />
     <Compile Include="Code\UserCode.cs" />
     <Compile Include="Dto\GameRoomDto.cs" />
+    <Compile Include="Dto\HgDto.cs" />
+    <Compile Include="Dto\HpDto.cs" />
+    <Compile Include="Dto\KillDto.cs" />
     <Compile Include="Dto\MatchDto.cs" />
     <Compile Include="Dto\TransformDto.cs" />
     <Compile Include="Dto\UserDto.cs" />

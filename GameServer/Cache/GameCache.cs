@@ -88,7 +88,7 @@ namespace GameServer.Cache
             return room;
         }
         /// <summary>
-        /// 清理游戏房间
+        /// 清理游戏房间（重用房间的时候使用）
         /// </summary>
         /// <param name="room"></param>
         public void ClearGameRoom(GameRoom room)

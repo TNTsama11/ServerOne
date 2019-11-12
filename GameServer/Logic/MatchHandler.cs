@@ -164,6 +164,15 @@ namespace GameServer.Logic
                         TransformInfo transformInfo = gameRoom.GetTransByAcc(item);
                         TransformDto transformDto = new TransformDto(item,transformInfo.pos,transformInfo.rota);
                         gameRoomDto.UserTransDto.Add(item, transformDto);
+                        int hp = gameRoom.GetHpByAcc(item);
+                        HpDto hpDto = new HpDto(item, hp);
+                        gameRoomDto.UserHpDict.Add(item, hpDto);
+                        int hg = gameRoom.GetHgByAcc(item);
+                        HgDto hgDto = new HgDto(item, hg);
+                        gameRoomDto.UserHgDict.Add(item, hgDto);
+                        int kill = gameRoom.GetKillByAcc(item);
+                        KillDto killDto = new KillDto(item, kill);
+                        gameRoomDto.UserKillDict.Add(item, killDto);
                     }
                     //广播开始游戏
                    // room.BroadcastUserInfo(OpCode.MATCH, MatchCode.MATCH_START_BROA, null);

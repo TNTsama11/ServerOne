@@ -19,7 +19,19 @@ namespace GameServer.Cache
         /// 房间内玩家Account与Transform信息的字典
         /// </summary>
         public Dictionary<string,TransformInfo> UserTransDict { get; set; }
-        
+        /// <summary>
+        /// 房间内玩家Account与hp的字典
+        /// </summary>
+        public Dictionary<string,int> UserHpDict { get; set; }
+        /// <summary>
+        /// 房间内玩家Account与hg的字典
+        /// </summary>
+        public Dictionary<string,int> UserHgDict { get; set; }
+        /// <summary>
+        /// 房间内玩家Account与击杀数的字典
+        /// </summary>
+        public Dictionary<string,int> UserKillDict { get; set; }
+
         public int id { get; set; }
 
         public GameRoom(int id)
@@ -27,6 +39,9 @@ namespace GameServer.Cache
             this.id = id;
             this.UserAccClientDict = new Dictionary<string, ClientPeer>();
             this.UserTransDict = new Dictionary<string, TransformInfo>();
+            this.UserHpDict = new Dictionary<string, int>();
+            this.UserHgDict = new Dictionary<string, int>();
+            this.UserKillDict = new Dictionary<string, int>();
         }
 
         /// <summary>
@@ -55,6 +70,9 @@ namespace GameServer.Cache
             UserAccClientDict.Add(acc, client);
             TransformInfo trans = new TransformInfo();
             UserTransDict.Add(acc, trans);
+            UserHpDict.Add(acc,100);
+            UserHgDict.Add(acc, 200);
+            UserKillDict.Add(acc, 0);
         }
         /// <summary>
         /// 退出游戏房间
@@ -63,7 +81,53 @@ namespace GameServer.Cache
         {
             UserAccClientDict.Remove(acc);
             UserTransDict.Remove(acc);
+            UserHpDict.Remove(acc);
+            UserHgDict.Remove(acc);
+            UserKillDict.Remove(acc);
         }
+        /// <summary>
+        /// 获取玩家hp
+        /// </summary>
+        public int GetHpByAcc(string acc)
+        {
+            return UserHpDict[acc];
+        }
+        /// <summary>
+        /// 设置玩家hp
+        /// </summary>
+        public void SetHp(string acc,int hp)
+        {
+            UserHpDict[acc] = hp;
+        }
+        /// <summary>
+        /// 获取玩家hg
+        /// </summary>
+        public int GetHgByAcc(string acc)
+        {
+            return UserHgDict[acc];
+        }
+        /// <summary>
+        /// 设置玩家hg
+        /// </summary>
+        public void SetHg(string acc,int hg)
+        {
+            UserHgDict[acc] = hg;
+        }
+        /// <summary>
+        /// 获取玩家kill
+        /// </summary>
+        public int GetKillByAcc(string acc)
+        {
+            return UserKillDict[acc];
+        }
+        /// <summary>
+        /// 设置玩家kill
+        /// </summary>
+        public void SetKill(string acc,int kill)
+        {
+            UserKillDict[acc] = kill;
+        }
+
         /// <summary>
         /// 刷新玩家位置信息
         /// </summary>
@@ -83,7 +147,6 @@ namespace GameServer.Cache
         /// <summary>
         /// 生成一个不和其他玩家冲突的位置（x和z）
         /// </summary>
-        /// <returns></returns>
         public int[] GetRandomPosition()
         {
             Random ra =new Random(Guid.NewGuid().GetHashCode());
