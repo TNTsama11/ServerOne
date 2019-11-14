@@ -128,6 +128,21 @@ namespace GameServer.Cache
             UserKillDict[acc] = kill;
         }
 
+        public void RefreshHp(string acc,int hp=100)
+        {
+            UserHpDict[acc] = hp;
+        }
+
+        public void RefreshHg(string acc,int hg = 200)
+        {
+            UserHgDict[acc] = hg;
+        }
+
+        public void RefreshKill(string acc,int kill)
+        {
+            UserKillDict[acc] = kill;
+        }
+
         /// <summary>
         /// 刷新玩家位置信息
         /// </summary>

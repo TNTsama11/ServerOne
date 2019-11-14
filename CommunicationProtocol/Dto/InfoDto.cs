@@ -6,24 +6,26 @@ using System.Text;
 namespace CommunicationProtocol.Dto
 {
     [Serializable]
-    public class KillDto
+    public class InfoDto
     {
-        public string Account { get; set; }
-        public int Kill { get; set; }
+        public string Account;
+        public string message;
 
-        public KillDto()
+        public InfoDto()
         {
 
         }
-        public KillDto(string acc, int kill)
+
+        public InfoDto(string msg,string acc = "")
         {
+            this.message = msg;
             this.Account = acc;
-            this.Kill = kill;
         }
-        public void Change(string acc, int kill)
+
+        public void Change( string msg, string acc = "")
         {
+            this.message = msg;
             this.Account = acc;
-            this.Kill = kill;
         }
     }
 }

@@ -34,5 +34,11 @@ namespace CommunicationProtocol.Code
         public const int GAME_SYNC_ATTACKTYPE_CERQ = 24;
         public const int GAME_SYNC_ATTACKTYPE_SREP = 25;
         public const int GAME_SYNC_ATTACKTYPE_BROA = 26;
+        public const int GAME_SYNC_STATE_KILL_CERQ = 27;
+        public const int GAME_SYNC_STATE_KILL_SREP = 28;
+        public const int GAME_SYNC_STATE_KILL_BROA = 29;
+        public const int GAME_SYNC_INFO_CERQ = 30;
+        public const int GAME_SYNC_INFO_SREP = 31;
+        public const int GAME_SYNC_INFO_BROA = 32;
     }
 }

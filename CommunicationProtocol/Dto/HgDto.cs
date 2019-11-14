@@ -5,6 +5,7 @@ using System.Text;
 
 namespace CommunicationProtocol.Dto
 {
+    [Serializable]
     public class HgDto
     {
         public string Account { get; set; }

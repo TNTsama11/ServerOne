@@ -49,6 +49,7 @@
     <Compile Include="Dto\GameRoomDto.cs" />
     <Compile Include="Dto\HgDto.cs" />
     <Compile Include="Dto\HpDto.cs" />
+    <Compile Include="Dto\InfoDto.cs" />
     <Compile Include="Dto\KillDto.cs" />
     <Compile Include="Dto\MatchDto.cs" />
     <Compile Include="Dto\TransformDto.cs" />
