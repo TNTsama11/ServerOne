@@ -127,17 +127,26 @@ namespace GameServer.Cache
         {
             UserKillDict[acc] = kill;
         }
-
+        /// <summary>
+        /// 重置hp
+        /// 有默认值
+        /// </summary>
         public void RefreshHp(string acc,int hp=100)
         {
             UserHpDict[acc] = hp;
         }
-
+        /// <summary>
+        /// 重置hg
+        /// 有默认值
+        /// </summary>
         public void RefreshHg(string acc,int hg = 200)
         {
             UserHgDict[acc] = hg;
         }
-
+        /// <summary>
+        /// 刷新kill
+        /// 无默认值
+        /// </summary>
         public void RefreshKill(string acc,int kill)
         {
             UserKillDict[acc] = kill;

@@ -55,8 +55,7 @@ namespace GameServer.Logic
                     ExcutePlayerSpawn(client);
                     break;
                 case GameCode.GAME_DEATH_CERQ:
-                    //TODO
-                    //玩家死亡
+                    ExcutePlayerDeath(client, value as DeathDto);
                     break;
                 case GameCode.GAME_SYNC_STATE_HP_CERQ:
                     ExcuteSyncHp(client,value as HpDto);
@@ -76,8 +75,7 @@ namespace GameServer.Logic
                     ExcuteSyncKill(client, value as KillDto);
                     break;
                 case GameCode.GAME_SYNC_INFO_CERQ:
-                    //TODO
-                    //处理客户端发来的消息
+                    ExcuteSyncInfo(client, value as InfoDto);
                     break;
                 default:
                     break;
@@ -259,6 +257,18 @@ namespace GameServer.Logic
                 string acc = userCache.GetAccByClient(client);
                 GameRoom room = gameCache.GetGameRoom(acc);
                 room.Broadcast(OpCode.GAME, GameCode.GAME_SYNC_INFO_BROA, dto);
+            });
+        }
+        /// <summary>
+        /// 处理玩家死亡
+        /// </summary>
+        private void ExcutePlayerDeath(ClientPeer client,DeathDto deathDto)
+        {
+            SingleExcute.Instance.Exeute(() =>
+            {
+                string acc = userCache.GetAccByClient(client);
+                GameRoom room = gameCache.GetGameRoom(acc);                
+                room.Broadcast(OpCode.GAME, GameCode.GAME_DEATH_BROA,deathDto,client);
             });
         }
 

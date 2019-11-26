@@ -71,7 +71,7 @@ namespace ServerOne.mTimer
                 if (model.Time<=DateTime.Now.Ticks) //如果之前设置的时间小于或者等于当前时间就执行
                 {
                     model.Run(); //任务触发完后需要删除，foreach遍历字典的时候无法对字典元素进行操作否则会出错，所以在之前删除
-                  //  removeList.Add(model.Id);
+                    removeList.Add(model.Id);
                 }
             }
         }
