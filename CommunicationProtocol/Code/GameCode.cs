@@ -40,5 +40,6 @@ namespace CommunicationProtocol.Code
         public const int GAME_SYNC_INFO_CERQ = 30;
         public const int GAME_SYNC_INFO_SREP = 31;
         public const int GAME_SYNC_INFO_BROA = 32;
+        public const int GAME_RESPAWN_COUNTDOWN = 33;
     }
 }

@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using ServerOne;
 using GameServer.Cache;
 using GameServer.Model;
 using CommunicationProtocol.Dto;
 using CommunicationProtocol.Code;
-
+using ServerOne.mTimer;
 
 namespace GameServer.Logic
 {
@@ -24,6 +25,10 @@ namespace GameServer.Logic
         private HgDto tempHgDto = new HgDto();
         private KillDto tempKillDto = new KillDto();
         private InfoDto tempInfoDto = new InfoDto();
+        /// <summary>
+        /// 复活时间
+        /// </summary>
+        private int respawnInterval=3;
 
         public void OnDisconnect(ClientPeer client)
         {
@@ -193,7 +198,7 @@ namespace GameServer.Logic
                 GameRoom room = gameCache.GetGameRoom(acc);
                 room.RefreshTrans(acc, dto.pos, dto.rota);
                 room.Broadcast(OpCode.GAME, GameCode.GAME_SYNC_TRANSFORM_BROA, dto, client);
-                Tool.PrintMessage("收到客户端" + client.clientSocket.RemoteEndPoint.ToString() + "方位信息：[pos:"+dto.pos[0]+","+dto.pos[1]+ "," + dto.pos[2] + ";rota:"+dto.rota[0]+ "," + dto.rota[1]+ "," + dto.rota[2] + "]");
+                
             });
         }
         /// <summary>
@@ -269,7 +274,56 @@ namespace GameServer.Logic
                 string acc = userCache.GetAccByClient(client);
                 GameRoom room = gameCache.GetGameRoom(acc);                
                 room.Broadcast(OpCode.GAME, GameCode.GAME_DEATH_BROA,deathDto,client);
+                Tool.PrintMessage("玩家" + client.clientSocket.RemoteEndPoint.ToString() + "死亡");
+                //给杀手加个人头
+                if (userCache.IsOnline(deathDto.KillerAccount))
+                {
+                    int tempKill = room.GetKillByAcc(deathDto.KillerAccount)+1;
+                    room.RefreshKill(deathDto.KillerAccount, tempKill);
+                    tempKillDto.Change(deathDto.KillerAccount, tempKill);
+                    room.Broadcast(OpCode.GAME, GameCode.GAME_SYNC_STATE_KILL_BROA, tempKillDto);
+                }
+                //TODO
+                //触发复活倒计时
+                RespawnCountDown(client);
             });
+        }
+        /// <summary>
+        /// 复活倒计时
+        /// </summary>
+        private void RespawnCountDown(ClientPeer client)
+        {
+            SingleExcute.Instance.Exeute(()=> 
+            {
+                MTimer mTimer = new MTimer();
+                mTimer.t = respawnInterval;
+                mTimer.client = client;
+                mTimer.timer = new Timer(RespawnTimerCallback, mTimer, 0, 1000);
+            });
+        }
+        
+        private void RespawnTimerCallback(object state)
+        {
+            SingleExcute.Instance.Exeute(()=> 
+            {
+                MTimer timer = state as MTimer;
+                //向客户端发送倒计时信息
+                timer.client.SendMessage(OpCode.GAME, GameCode.GAME_RESPAWN_COUNTDOWN, timer.t);
+                Tool.PrintMessage("复活倒计时:" + timer.t);
+                timer.t--;
+                if (timer.t < 0)
+                {
+                    //TODO
+                    //广播这个玩家复活 
+                    string acc = userCache.GetAccByClient(timer.client);
+                    GameRoom room = gameCache.GetGameRoom(acc);
+                    int[] pos = room.GetRandomPosition();
+                    room.RefreshTrans(acc, pos);
+                    transformDto.Change(acc, room.GetTransByAcc(acc).pos, room.GetTransByAcc(acc).rota);
+                    room.Broadcast(OpCode.GAME, GameCode.GAME_SPAWN_BROA, transformDto);
+                    timer.timer.Dispose();
+                }
+            });           
         }
 
         /// <summary>

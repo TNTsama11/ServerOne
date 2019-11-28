@@ -48,13 +48,12 @@
     <Compile Include="Concurrent\ConcurrentInt.cs" />
     <Compile Include="EncodeTool.cs" />
     <Compile Include="IApplication.cs" />
+    <Compile Include="mTimer\MTimer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerPeer.cs" />
     <Compile Include="SingleExcute.cs" />
     <Compile Include="SocketMessage.cs" />
-    <Compile Include="mTimer\TimerManager.cs" />
-    <Compile Include="mTimer\TimerModel.cs" />
     <Compile Include="Tool.cs" />
   </ItemGroup>
   <ItemGroup>

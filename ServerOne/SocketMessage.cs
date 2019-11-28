@@ -40,5 +40,12 @@ namespace ServerOne
             this.subCode = subCode;
             this.value = value;
         }
+
+        public void Change(int opCode, int subCode, object value)
+        {
+            this.opCode = opCode;
+            this.subCode = subCode;
+            this.value = value;
+        }
     }
 }

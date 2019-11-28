@@ -14,7 +14,7 @@ namespace ServerOne
      public  class ClientPeer
     {
         public Socket clientSocket { get; set; }
-
+        private SocketMessage smg = new SocketMessage();
         public ClientPeer()
         {
             receiveArgs = new SocketAsyncEventArgs();
@@ -131,7 +131,8 @@ namespace ServerOne
         /// <param name="value">参数</param>
         public void SendMessage(int opCode,int subCode,object value)
         {
-            SocketMessage smg = new SocketMessage(opCode,subCode,value);
+            // SocketMessage smg = new SocketMessage(opCode,subCode,value);
+            smg.Change(opCode, subCode, value);
             byte[] data = EncodeTool.EncodeMessage(smg); //构建SocketMessage
             byte[] package = EncodeTool.EncodePackage(data); //构建数据包
             sendQueue.Enqueue(package); //将要发送的消息存入消息队列
