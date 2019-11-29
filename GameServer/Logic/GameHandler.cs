@@ -283,7 +283,6 @@ namespace GameServer.Logic
                     tempKillDto.Change(deathDto.KillerAccount, tempKill);
                     room.Broadcast(OpCode.GAME, GameCode.GAME_SYNC_STATE_KILL_BROA, tempKillDto);
                 }
-                //TODO
                 //触发复活倒计时
                 RespawnCountDown(client);
             });
@@ -304,8 +303,6 @@ namespace GameServer.Logic
         
         private void RespawnTimerCallback(object state)
         {
-            SingleExcute.Instance.Exeute(()=> 
-            {
                 MTimer timer = state as MTimer;
                 //向客户端发送倒计时信息
                 timer.client.SendMessage(OpCode.GAME, GameCode.GAME_RESPAWN_COUNTDOWN, timer.t);
@@ -313,17 +310,10 @@ namespace GameServer.Logic
                 timer.t--;
                 if (timer.t < 0)
                 {
-                    //TODO
-                    //广播这个玩家复活 
-                    string acc = userCache.GetAccByClient(timer.client);
-                    GameRoom room = gameCache.GetGameRoom(acc);
-                    int[] pos = room.GetRandomPosition();
-                    room.RefreshTrans(acc, pos);
-                    transformDto.Change(acc, room.GetTransByAcc(acc).pos, room.GetTransByAcc(acc).rota);
-                    room.Broadcast(OpCode.GAME, GameCode.GAME_SPAWN_BROA, transformDto);
+                //让这个玩家复活 
+                    ExcutePlayerSpawn(timer.client);
                     timer.timer.Dispose();
-                }
-            });           
+                }      
         }
 
         /// <summary>
@@ -348,14 +338,17 @@ namespace GameServer.Logic
                 tempHpDto.Change(acc, room.GetHpByAcc(acc));
                 tempHgDto.Change(acc, room.GetHgByAcc(acc));
                 tempKillDto.Change(acc, room.GetKillByAcc(acc));
-                client.SendMessage(OpCode.GAME, GameCode.GAME_SYNC_STATE_HP_SREP, tempHpDto);
-                client.SendMessage(OpCode.GAME, GameCode.GAME_SYNC_STATE_HG_SREP, tempHgDto);
-                client.SendMessage(OpCode.GAME, GameCode.GAME_SYNC_STATE_KILL_SREP, tempKillDto);
+                //client.SendMessage(OpCode.GAME, GameCode.GAME_SYNC_STATE_HP_SREP, tempHpDto);
+                //client.SendMessage(OpCode.GAME, GameCode.GAME_SYNC_STATE_HG_SREP, tempHgDto);
+                //client.SendMessage(OpCode.GAME, GameCode.GAME_SYNC_STATE_KILL_SREP, tempKillDto);
+                room.Broadcast(OpCode.GAME, GameCode.GAME_SYNC_STATE_HP_BROA, tempHpDto);
+                room.Broadcast(OpCode.GAME, GameCode.GAME_SYNC_STATE_HG_BROA, tempHgDto);
+                room.Broadcast(OpCode.GAME, GameCode.GAME_SYNC_STATE_KILL_BROA, tempKillDto);
                 room.Broadcast(OpCode.GAME, GameCode.GAME_SYNC_STATE_HP_SREP, tempHpDto, client);
                 room.Broadcast(OpCode.GAME, GameCode.GAME_SYNC_STATE_HG_SREP, tempHgDto, client);
                 room.Broadcast(OpCode.GAME, GameCode.GAME_SYNC_STATE_KILL_SREP, tempKillDto, client);
                 Tool.PrintMessage("玩家" + client.clientSocket.RemoteEndPoint.ToString() + "已复活");
-                string infoMsg = "玩家 " + "<color=#1e90ff>" + userCache.GetModelByAcc(acc).Name + "</color>" + " 已复活\n";
+                string infoMsg = "<color=#1e90ff>" + userCache.GetModelByAcc(acc).Name + "</color>" + " 已复活\n";
                 tempInfoDto.Change(infoMsg);
                 room.Broadcast(OpCode.GAME, GameCode.GAME_SYNC_INFO_BROA, tempInfoDto,client);
             });
