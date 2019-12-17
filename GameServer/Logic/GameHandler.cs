@@ -313,7 +313,8 @@ namespace GameServer.Logic
                 //让这个玩家复活 
                     ExcutePlayerSpawn(timer.client);
                     timer.timer.Dispose();
-                }      
+                }
+
         }
 
         /// <summary>
